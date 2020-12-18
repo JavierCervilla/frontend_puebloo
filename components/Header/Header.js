@@ -3,7 +3,7 @@ import Link from 'next/link'
 
 import { Container, Button, Row, Col, Navbar } from 'react-bootstrap'
 import styled from '@emotion/styled'
-import { WithAuthSync } from '../../utils/auth'
+import { logout, WithAuthSync } from '../../utils/auth'
 import jwtDecode from 'jwt-decode'
 
 const Header = ({ token }) => {
@@ -15,7 +15,8 @@ const Header = ({ token }) => {
   useEffect(() => {
     if (!!token) {
       const userData = jwtDecode(token)
-      setUser(userData)
+      if (userData.id)
+        setUser(userData)
       console.log('user:', userData)
     }
     console.log('token:', token)
@@ -71,6 +72,9 @@ const Header = ({ token }) => {
                   <img src='/images/business_header.svg' />
                 </Button>
               </Link>
+              <Button as='a' className='icon business' disabled variant='dark' onClick={logout}>
+                <img src='/images/logout_header.svg' />
+              </Button>
             </Container>
           </Row>
         </Container>
@@ -127,8 +131,8 @@ const HeaderStyled = styled.div`
       align-items:center;
       .icon{
         text-align:center;
-        margin: .5em auto;
-        padding: .5em .5em;
+        margin: .25em auto ;
+        padding: .25em .25em;
         img{
           width:2.5em;
           height:2.5em;

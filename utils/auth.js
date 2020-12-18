@@ -2,6 +2,7 @@ import { useEffect } from 'react'
 import Router from 'next/router'
 import nextCookie from 'next-cookies'
 import cookie from 'js-cookie'
+import jwt from 'jsonwebtoken'
 
 export const login = ({ token }) => {
     cookie.set('token', token, { expires: 1 })
@@ -10,14 +11,29 @@ export const login = ({ token }) => {
 
 export const auth = ctx => {
     const { token } = nextCookie(ctx)
-
+    console.log('token in auth:', token)
     // If there's no token, it means the user is not logged in.
     if (!token || token === undefined) {
         if (typeof window === 'undefined') {
-            ctx.res.writeHead(302, { Location: '/login' })
-            ctx.res.end()
+            return jwt.sign(
+                {
+                    username: "guest",
+                    rol: "guest",
+                },
+                "tuvieja",
+                { expiresIn: '1h' })
+            /*             ctx.res.writeHead(302, { Location: '/register' })
+                        ctx.res.end() */
         } else {
-            Router.push('/login')
+            return jwt.sign(
+                {
+                    username: "guest",
+                    rol: "guest",
+                },
+                "tuvieja"
+                ,
+                { expiresIn: '1h' })
+            //Router.push('/login')
         }
     }
 

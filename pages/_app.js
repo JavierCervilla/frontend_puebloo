@@ -1,4 +1,4 @@
-//import '../styles/globals.css'
+const internalIp = require('internal-ip');
 import { ThemeProvider } from '@emotion/react'
 import { ApolloClient, InMemoryCache, createHttpLink, ApolloProvider } from '@apollo/client'
 
@@ -13,8 +13,13 @@ import { WithAuthSync } from '../utils/auth'
 
 /** APOLLO */
 
-const URI = 'http://localhost:5000'
+/* const URI = process.env.NODE_ENV === 'development'
+  ? `http://${internalIp.v4.sync()}:5000`
+  : 'https://example.com/graphql' */
 
+//console.log('${internalIp.v4.sync()}', internalIp.v4.sync())
+
+const URI = `http://192.168.1.47:5000`
 const httpLink = createHttpLink({
   uri: URI
 })

@@ -22,9 +22,9 @@ const Home = ({ theme, token }) => {
 
 
   // Invited User
-  if (!user) {
+  if (user.rol === 'guest') {
     return (
-      <MainLayout >
+      <MainLayout token={token}>
         <HomePageGuest theme={theme}>
           <Container>
             <Row>
@@ -64,7 +64,8 @@ const Home = ({ theme, token }) => {
   } else {
     // AUTH USER SIN PUEBLOS??
     const { pueblos } = user
-    if (pueblos.length < 1) {
+
+    if (!!!pueblos || pueblos.length < 1) {
       return (
         <MainLayout token={token}>
           <HomePageRegistered>

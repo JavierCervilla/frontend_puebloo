@@ -13,6 +13,7 @@ import styled from '@emotion/styled'
 
 import { Container, Row, Spinner, Form, Button } from 'react-bootstrap'
 import Message from '../components/Message/Message'
+import MainLayout from '../layout/MainLayout'
 
 
 export default function register() {
@@ -54,109 +55,112 @@ export default function register() {
     }, [errors])
 
     return (
-        <RegisterPage>
-            <Container className='layout'>
-                <Row>
-                    <Link href='/'>
-                        <a >
-                            <img className='icon' src='/images/back.svg' />
-                        </a>
-                    </Link>
-                </Row>
-                <Row className='form'>
-                    <Container>
-                        <h1 className='title'>Registrarse</h1>
+        <MainLayout >
 
-                        <ErrorListUL className='errors'>
-                            {errors.email &&
-                                <li className='msg-li'>
-                                    <Message className='msg' variant={"danger"} >{errors.email}</Message>
-                                </li>
-                            }
-                            {errors.username &&
-                                <li className='msg-li'>
-                                    <Message className='msg' className='msg' variant={"danger"} >{errors.username}</Message>
-                                </li>
-                            }
-                            {errors.password &&
-                                <li className='msg-li'>
-                                    <Message style={{ marginTop: '.5em' }} variant={"danger"} >{errors.password}</Message>
-                                </li>
-                            }
-                        </ErrorListUL>
+            <RegisterPage>
+                <Container className='layout'>
+                    <Row>
+                        <Link href='/'>
+                            <a >
+                                <img className='icon' src='/images/back.svg' />
+                            </a>
+                        </Link>
+                    </Row>
+                    <Row className='form'>
+                        <Container>
+                            <h1 className='title'>Registrarse</h1>
 
-                        <Form onSubmit={(e) => submitHandler(e)} className='form' >
-                            <Form.Group controlId="Email">
-                                <Form.Label>Correo electrónico</Form.Label>
-                                <Form.Control type="email"
-                                    placeholder="introduzca su email"
-                                    value={email}
-                                    onChange={(e) => setEmail(e.target.value)}
-                                    isInvalid={!!errors.email}
-                                />
-                            </Form.Group>
-                            <Form.Group controlId="Username">
-                                <Form.Label>Nombre de usuario</Form.Label>
-                                <Form.Control type="text"
-                                    placeholder="introduzca su nombre de usuario"
-                                    value={username}
-                                    onChange={(e) => setUsername(e.target.value)}
-                                    isInvalid={!!errors.username}
-                                />
+                            <ErrorListUL className='errors'>
+                                {errors.email &&
+                                    <li className='msg-li'>
+                                        <Message className='msg' variant={"danger"} >{errors.email}</Message>
+                                    </li>
+                                }
+                                {errors.username &&
+                                    <li className='msg-li'>
+                                        <Message className='msg' className='msg' variant={"danger"} >{errors.username}</Message>
+                                    </li>
+                                }
+                                {errors.password &&
+                                    <li className='msg-li'>
+                                        <Message style={{ marginTop: '.5em' }} variant={"danger"} >{errors.password}</Message>
+                                    </li>
+                                }
+                            </ErrorListUL>
 
-                                <Form.Text className="text-muted">
-                                    <span>
-                                        <small>utiliza un nombre de usuario que te represente.</small>
-                                    </span>
-                                </Form.Text>
-                            </Form.Group>
-
-
-                            <Form.Group controlId="Password">
-                                <Form.Label>Contraseña</Form.Label>
-                                <Form.Control type="password"
-                                    placeholder="Introduzca la contraseña"
-                                    value={password}
-                                    onChange={(e) => setPassword(e.target.value)}
-                                    isInvalid={!!errors.password}
-                                />
-
-                            </Form.Group>
-
-                            <Form.Group controlId="ConfirmPassword">
-                                <Form.Label>Repetir contraseña</Form.Label>
-                                <Form.Control type="password"
-                                    placeholder="Vuelve a introducir la contraseña"
-                                    value={confirmPassword}
-                                    onChange={(e) => setConfirmPassword(e.target.value)}
-                                    isInvalid={!!errors.password}
-                                />
-                            </Form.Group>
-
-                            {loading ? (
-                                <Button variant="block"
-                                    className='btn-register'
-                                    disabled
-                                >
-                                    <Spinner
-                                        as="span"
-                                        animation="grow"
-                                        size="sm"
-                                        role="status"
-                                        aria-hidden="true"
+                            <Form onSubmit={(e) => submitHandler(e)} className='form' >
+                                <Form.Group controlId="Email">
+                                    <Form.Label>Correo electrónico</Form.Label>
+                                    <Form.Control type="email"
+                                        placeholder="introduzca su email"
+                                        value={email}
+                                        onChange={(e) => setEmail(e.target.value)}
+                                        isInvalid={!!errors.email}
                                     />
+                                </Form.Group>
+                                <Form.Group controlId="Username">
+                                    <Form.Label>Nombre de usuario</Form.Label>
+                                    <Form.Control type="text"
+                                        placeholder="introduzca su nombre de usuario"
+                                        value={username}
+                                        onChange={(e) => setUsername(e.target.value)}
+                                        isInvalid={!!errors.username}
+                                    />
+
+                                    <Form.Text className="text-muted">
+                                        <span>
+                                            <small>utiliza un nombre de usuario que te represente.</small>
+                                        </span>
+                                    </Form.Text>
+                                </Form.Group>
+
+
+                                <Form.Group controlId="Password">
+                                    <Form.Label>Contraseña</Form.Label>
+                                    <Form.Control type="password"
+                                        placeholder="Introduzca la contraseña"
+                                        value={password}
+                                        onChange={(e) => setPassword(e.target.value)}
+                                        isInvalid={!!errors.password}
+                                    />
+
+                                </Form.Group>
+
+                                <Form.Group controlId="ConfirmPassword">
+                                    <Form.Label>Repetir contraseña</Form.Label>
+                                    <Form.Control type="password"
+                                        placeholder="Vuelve a introducir la contraseña"
+                                        value={confirmPassword}
+                                        onChange={(e) => setConfirmPassword(e.target.value)}
+                                        isInvalid={!!errors.password}
+                                    />
+                                </Form.Group>
+
+                                {loading ? (
+                                    <Button variant="block"
+                                        className='btn-register'
+                                        disabled
+                                    >
+                                        <Spinner
+                                            as="span"
+                                            animation="grow"
+                                            size="sm"
+                                            role="status"
+                                            aria-hidden="true"
+                                        />
                                     Loading...
-                                </Button>
-                            ) : (
-                                    <Button className='btn-register' variant="block" type="submit" >
-                                        Registrarse
                                     </Button>
-                                )}
-                        </Form>
-                    </Container>
-                </Row>
-            </Container>
-        </RegisterPage >
+                                ) : (
+                                        <Button className='btn-register' variant="block" type="submit" >
+                                            Registrarse
+                                        </Button>
+                                    )}
+                            </Form>
+                        </Container>
+                    </Row>
+                </Container>
+            </RegisterPage >
+        </MainLayout>
     )
 }
 

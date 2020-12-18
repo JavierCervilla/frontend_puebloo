@@ -1,0 +1,51 @@
+{
+    "name": "next-offline",
+    "short_name": "next-offline",
+    "description": "Nextjs using service worker via next-offline",
+    "icons": [
+        {
+            "src": "/images/back.svg",
+            "sizes": "13x12",
+            "type": "image/svg"
+        },
+        {
+            "src": "/images/business_header.svg",
+            "sizes": "49x44",
+            "type": "image/svg"
+        },
+        {
+            "src": "/images/entitys_header.svg",
+            "sizes": "48x48",
+            "type": "image/svg"
+        },
+        {
+            "src": "/images/home_header.svg",
+            "sizes": "55x55",
+            "type": "image/svg"
+        },
+        {
+            "src": "/images/lupa_inicio.svg",
+            "sizes": "57x57",
+            "type": "image/svg"
+        },
+        {
+            "src": "/images/search_header.svg",
+            "sizes": "48x48",
+            "type": "image/svg"
+        },
+        {
+            "src": "/images/tuercas_inicio.svg",
+            "sizes": "57x57",
+            "type": "image/svg"
+        },
+        {
+            "src": "/images/usuarios_inicio.svg",
+            "sizes": "61x61",
+            "type": "image/svg"
+        }
+    ],
+    "theme_color": "#ffffff",
+    "background_color": "#ffffff",
+    "start_url": "/",
+    "display": "standalone"
+}
