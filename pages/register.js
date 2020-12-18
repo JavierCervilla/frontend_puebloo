@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'
 import Link from 'next/link'
+import { useRouter } from 'next/router'
 
 import gql from 'graphql-tag'
 import { useMutation } from '@apollo/client'
@@ -11,6 +12,8 @@ import Message from '../components/Message/Message'
 
 
 export default function register() {
+    const Router = useRouter()
+
     const [errors, setErrors] = useState(false)
     const [email, setEmail] = useState('')
     const [username, setUsername] = useState('')
@@ -18,11 +21,12 @@ export default function register() {
     const [confirmPassword, setConfirmPassword] = useState('')
 
     const [addUser, { loading }] = useMutation(REGISTER_USER, {
-        update(proxy, result) {
+        update(_, result) {
             console.log('result:', result)
+            Router.push('/')
         },
         onError(err) {
-            console.log('error:', err.graphQLErrors[0].extensions.exception.errors)
+            console.error('error:', err.graphQLErrors[0].extensions.exception.errors)
             setErrors(err.graphQLErrors[0].extensions.exception.errors)
         },
         variables: {
@@ -32,8 +36,6 @@ export default function register() {
 
     const submitHandler = (e) => {
         e.preventDefault()
-        const registerForm = { email, username, password, confirmPassword }
-        console.log('registerForm', registerForm)
         addUser()
     }
 
@@ -83,6 +85,7 @@ export default function register() {
                                     placeholder="introduzca su email"
                                     value={email}
                                     onChange={(e) => setEmail(e.target.value)}
+                                    isInvalid={!!errors.email}
                                 />
                             </Form.Group>
                             <Form.Group controlId="Username">
@@ -91,6 +94,7 @@ export default function register() {
                                     placeholder="introduzca su nombre de usuario"
                                     value={username}
                                     onChange={(e) => setUsername(e.target.value)}
+                                    isInvalid={!!errors.username}
                                 />
 
                                 <Form.Text className="text-muted">
@@ -105,6 +109,7 @@ export default function register() {
                                     placeholder="Introduzca la contraseña"
                                     value={password}
                                     onChange={(e) => setPassword(e.target.value)}
+                                    isInvalid={!!errors.password}
                                 />
 
                             </Form.Group>
@@ -115,6 +120,7 @@ export default function register() {
                                     placeholder="Vuelve a introducir la contraseña"
                                     value={confirmPassword}
                                     onChange={(e) => setConfirmPassword(e.target.value)}
+                                    isInvalid={!!errors.password}
                                 />
                             </Form.Group>
 
@@ -134,7 +140,7 @@ export default function register() {
                                 </Button>
                             ) : (
                                     <Button className='btn-register' variant="block" type="submit" >
-                                        Submit
+                                        Registrarse
                                     </Button>
                                 )}
                         </Form>
@@ -182,6 +188,10 @@ const ErrorListUL = styled.ul`
 
 const RegisterPage = styled.div`
     @media only screen and (max-width: ${props => props.theme.devices.mobile}) {    
+        .form{
+            max-width:400px;
+            margin: auto;
+        }
         .layout{
             padding:1em;
         }

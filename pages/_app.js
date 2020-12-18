@@ -14,8 +14,10 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 
 /** APOLLO */
 
+const URI = 'http://localhost:5000'
+
 const httpLink = createHttpLink({
-  uri: 'http://localhost:5000'
+  uri: URI
 })
 
 const client = new ApolloClient({
