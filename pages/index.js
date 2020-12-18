@@ -1,63 +1,116 @@
-import styled from '@emotion/styled'
-import Image from 'next/image'
-import Link from 'next/link'
+import { useState, useEffect } from 'react'
+
+import jwtDecode from 'jwt-decode'
+
+import { WithAuthSync } from "../utils/auth";
 
 import { Container, Button, Row, Col } from 'react-bootstrap'
+import styled from '@emotion/styled'
+
+import ListPuebloFeed from '../components/Pueblo/ListPuebloFeed'
+import MainLayout from '../layout/MainLayout';
 
 
-export default function Home({ theme }) {
+const Home = ({ theme, token }) => {
+  // FIXME: USEstate
+  const [user, setUser] = useState(false)
+
+  useEffect(() => {
+    const userData = jwtDecode(token)
+    setUser(userData)
+  }, [token])
+
+
   // Invited User
-  return (
-    <HomePage theme={theme}>
-      <Container>
-        <Row>
-          <Container >
-            <Row className='hero'>
-              <h1>PUEBLOO</h1>
-            </Row >
-            <Row className='content'>
+  if (!user) {
+    return (
+      <MainLayout >
+        <HomePageGuest theme={theme}>
+          <Container>
+            <Row>
+              <Container >
+                <Row className='hero'>
+                  <h1>PUEBLOO</h1>
+                </Row >
+                <Row className='content'>
 
-              <div className='item'>
-                <img className='icon' src='/images/tuercas_inicio.svg' />
-                <h4>
-                  Participa en el desarrollo de tu pueblo
+                  <div className='item'>
+                    <img className='icon' src='/images/tuercas_inicio.svg' />
+                    <h4>
+                      Participa en el desarrollo de tu pueblo
                 </h4>
-              </div>
-              <div className='item'>
-                <img className='icon' src='/images/usuarios_inicio.svg' />
-                <h4>
-                  Conecta con los pueblos de tu zona
+                  </div>
+                  <div className='item'>
+                    <img className='icon' src='/images/usuarios_inicio.svg' />
+                    <h4>
+                      Conecta con los pueblos de tu zona
                 </h4>
-              </div>
-              <div className='item'>
-                <img className='icon' src='/images/lupa_inicio.svg' />
-                <h4>
-                  Descubre eventos, ofertas de empleo, viviendas...
+                  </div>
+                  <div className='item'>
+                    <img className='icon' src='/images/lupa_inicio.svg' />
+                    <h4>
+                      Descubre eventos, ofertas de empleo, viviendas...
                 </h4>
-              </div>
+                  </div>
+                </Row>
+              </Container>
             </Row>
           </Container>
-        </Row>
-        <Row>
-          <Container className='btn-holder'>
-            <Link href='/login'>
-              <Button as='a' className='login' disabled>
-                Entrar
-              </Button>
-            </Link>
-            <Link href='/register'>
-              <Button as='a' className='register' disabled>
-                Registrarse
-              </Button>
-            </Link>
-          </Container>
-        </Row>
-      </Container>
-    </HomePage >
-  )
+
+        </HomePageGuest >
+      </MainLayout>
+    )
+
+  } else {
+    // AUTH USER SIN PUEBLOS??
+    const { pueblos } = user
+    if (pueblos.length < 1) {
+      return (
+        <MainLayout token={token}>
+          <HomePageRegistered>
+            Sin Pueblo
+          <Container>
+              {/* FUNCION DE BUSCAR PUEBLO Y UNIRSE A EL */}
+            </Container>
+          </HomePageRegistered>
+        </MainLayout>
+      )
+
+    } else {
+      {/* CON PUEBLO*/ }
+      return (
+        <MainLayout token={token}>
+          <HomePageRegistered>
+            <ListPuebloFeed pueblos={pueblos} />
+          </HomePageRegistered>
+        </MainLayout>
+      )
+    }
+
+  }
 }
 
-const HomePage = styled.div`
+
+
+export default WithAuthSync(Home)
+
+/** REGISTERED HOME PAGE STYLES */
+
+const HomePageRegistered = styled.div`
+  h1{
+    color:red;
+  }
+
+`
+
+
+
+
+
+
+
+/** GUEST HOME PAGE STYLES */
+const HomePageGuest = styled.div`
   // MOBILE FIRST
   @media only screen and (max-width: ${props => props.theme.devices.mobile}) {
     background: url('images/home_layout.png') no-repeat center center fixed; 
@@ -67,48 +120,15 @@ const HomePage = styled.div`
     background-size: cover;
     height:100vh;
     
-    .btn-holder{
-      background-color:white;
-      position: fixed;
-      bottom:0;
-      width:100%;
-      display: flex;
-      flex-direction:row;
-      align-items:center;
-      .login, .register{
-        text-align:center;
-        margin: 1em 1em ;
-        padding: 1.5em 1.5em;
-        border-radius: ${props => props.theme.border.radius};
-      }
-      
-      .login {
-        width:45vw;
-        border:solid 2px ${props => props.theme.colors.dark};
-        border-radius: ${props => props.theme.border.radius};
-        color:${props => props.theme.colors.dark};
-        background:none;
-      }
-      .register{
-        width:45vw;
-        background-color:green;
-        color:white;
-        border:none;
-      }
-      .login::hover{
-        border-radius: ${props => props.theme.border.radius};
-      }
-      .login::active{
-        background-color:${props => props.theme.colors.success};
-      }
-    }
+    
     
     .hero{
       padding:calc(20vh - 5em) 0 0 0;
       h1{
+        margin:0 1em;
         color:${props => props.theme.colors.primary};
         text-align:center;
-        font-size:56px;
+        font-size:42px;
       }
     }
     .content{
@@ -123,7 +143,7 @@ const HomePage = styled.div`
           color:${props => props.theme.colors.primary};
           text-align:left;
           margin: 2em .5em 2em 1em;
-          font-size:21px;
+          font-size:18px;
         }
       }
     }

@@ -1,9 +1,13 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useContext } from 'react'
 import Link from 'next/link'
 import { useRouter } from 'next/router'
 
 import gql from 'graphql-tag'
 import { useMutation } from '@apollo/client'
+
+// CONTEXT
+import { AuthContext } from '../context/auth'
+
 
 import styled from '@emotion/styled'
 
@@ -12,6 +16,9 @@ import Message from '../components/Message/Message'
 
 
 export default function register() {
+    const context = useContext(AuthContext)
+
+
     const Router = useRouter()
 
     const [errors, setErrors] = useState(false)
@@ -21,8 +28,8 @@ export default function register() {
     const [confirmPassword, setConfirmPassword] = useState('')
 
     const [addUser, { loading }] = useMutation(REGISTER_USER, {
-        update(_, result) {
-            console.log('result:', result)
+        update(_, { data: { register: userData } }) {
+            context.login(userData)
             Router.push('/')
         },
         onError(err) {
@@ -78,7 +85,7 @@ export default function register() {
                             }
                         </ErrorListUL>
 
-                        <Form onSubmit={(e) => submitHandler(e)} >
+                        <Form onSubmit={(e) => submitHandler(e)} className='form' >
                             <Form.Group controlId="Email">
                                 <Form.Label>Correo electrónico</Form.Label>
                                 <Form.Control type="email"
@@ -98,7 +105,9 @@ export default function register() {
                                 />
 
                                 <Form.Text className="text-muted">
-                                    este sera visible por otros usuarios y vecinos, utiliza un nombre de usuario que te represente.
+                                    <span>
+                                        <small>utiliza un nombre de usuario que te represente.</small>
+                                    </span>
                                 </Form.Text>
                             </Form.Group>
 
@@ -173,6 +182,10 @@ const REGISTER_USER = gql`
       username
       createdAt
       token
+      rol
+      pueblos{
+          id name 
+      }
     }
   }
 `
@@ -189,11 +202,14 @@ const ErrorListUL = styled.ul`
 const RegisterPage = styled.div`
     @media only screen and (max-width: ${props => props.theme.devices.mobile}) {    
         .form{
+            display:flex;
+            flex-direction:column;
             max-width:400px;
             margin: auto;
+            overflow:scroll;
         }
         .layout{
-            padding:1em;
+            padding:.5em;
         }
         .errors{
             position:absolute;
@@ -207,8 +223,12 @@ const RegisterPage = styled.div`
           width:2em;;
         }
         .title{
-            font-size:42px;
+            font-size:1.5em;
             margin:  2em 0;
+            @media only screen and (max-width:321px){
+                margin: 1em;
+                font-size:1em;
+            }
         }
         .btn-register{
             background-color:green;

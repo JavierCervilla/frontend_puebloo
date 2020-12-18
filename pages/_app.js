@@ -4,13 +4,12 @@ import { ApolloClient, InMemoryCache, createHttpLink, ApolloProvider } from '@ap
 
 import Head from 'next/head'
 
-
-
 import GlobalStyles from '../components/GlobalStyles/GlobalStyles'
-import Navbar from '../components/Navbar/Navbar'
 import theme from '../theme/theme'
+import Header from '../components/Header/Header'
 
 import 'bootstrap/dist/css/bootstrap.min.css';
+import { WithAuthSync } from '../utils/auth'
 
 /** APOLLO */
 
@@ -42,7 +41,6 @@ function MyApp({ Component, pageProps }) {
           {/* <Navbar title={`El recetario de Mayte`} /> */}
           <Component {...pageProps} />
         </ThemeProvider>
-
       </ApolloProvider>
     </>
   )
