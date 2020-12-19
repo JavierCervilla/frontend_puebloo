@@ -82,7 +82,9 @@ const Home = ({ theme, token }) => {
       return (
         <MainLayout token={token}>
           <HomePageRegistered>
-            <ListPuebloFeed pueblos={pueblos} />
+            <div className='feed-container scrollbar style-15'>
+              <ListPuebloFeed pueblos={pueblos} />
+            </div>
           </HomePageRegistered>
         </MainLayout>
       )
@@ -98,9 +100,42 @@ export default WithAuthSync(Home)
 /** REGISTERED HOME PAGE STYLES */
 
 const HomePageRegistered = styled.div`
-  h1{
-    color:red;
+  .feed-container{
+    overflow:hidden;
   }
+  .scrollbar
+  {
+    height: 100vh;
+    width: 100vw;
+    float: left;
+    background: #F5F5F5;
+    overflow-y: scroll;
+  }
+  .style-15::-webkit-scrollbar-track
+  {
+    -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.1);
+    background-color: #F5F5F5;
+    border-radius: 10px;
+  }
+
+  .style-15::-webkit-scrollbar
+  {
+    width: 8px;
+    background-color: #F5F5F5;
+  }
+
+  .style-15::-webkit-scrollbar-thumb
+  {
+    border-radius: 10px;
+    background-color: #FFF;
+    background-image: -webkit-gradient(linear,
+                      40% 0%,
+                      75% 84%,
+                      from(#4D9C41),
+                      to(#19911D),
+									   color-stop(.6,#54DE5D))
+}
+
 
 `
 

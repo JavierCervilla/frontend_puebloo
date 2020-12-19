@@ -60,11 +60,13 @@ export default function register() {
             <RegisterPage>
                 <Container className='layout'>
                     <Row>
-                        <Link href='/'>
-                            <a >
-                                <img className='icon' src='/images/back.svg' />
-                            </a>
-                        </Link>
+                        <Container>
+                            <Link href='/'>
+                                <a >
+                                    <img className='icon' src='/images/back.svg' />
+                                </a>
+                            </Link>
+                        </Container>
                     </Row>
                     <Row className='form'>
                         <Container>
