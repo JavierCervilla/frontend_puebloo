@@ -5,15 +5,15 @@ import { Container, Row } from 'react-bootstrap'
 
 import SinglePueblo from '../../components/Pueblo/SinglePueblo'
 
-const ListPuebloFeed = ({ pueblos }) => {
+const ListPuebloFeed = ({ pueblos, light }) => {
 
     return (
-        <StyledListPost>
+        <StyledListPost light={light}>
             <Container className='feed'>
                 {(pueblos && pueblos.length >= 1) && (
                     pueblos.map(
                         (pueblo, index) => (
-                            <SinglePueblo key={`${pueblo.name}-${index}`} puebloId={pueblo._id} />
+                            <SinglePueblo key={`${pueblo.name}-${index}`} puebloId={pueblo._id} light={light} />
                         )
                     )
                 )}

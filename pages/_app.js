@@ -5,20 +5,25 @@ import { createUploadLink } from 'apollo-upload-client'
 
 import Head from 'next/head'
 
+import { StyleProvider } from '../context/style'
 import GlobalStyles from '../components/GlobalStyles/GlobalStyles'
 import theme from '../theme/theme'
 
 import 'bootstrap/dist/css/bootstrap.min.css';
+import { StyleContext } from '../context/style'
+import { useEffect } from 'react'
+
 
 
 /** APOLLO */
-const URI = `http://192.168.1.47:5000/graphql`
-/* const URI = process.env.NODE_ENV === 'development'
-? `http://${internalIp.v4.sync()}:5000`
-: 'https://example.com/graphql' */
+const { NODE_ENV, NEXT_PUBLIC_SERVER_PORT, NEXT_PUBLIC_BASE_URL } = process.env
+//const URI = `http://192.168.1.47:5000/graphql`
+const URI = NODE_ENV === 'development'
+  ? `${NEXT_PUBLIC_BASE_URL}:${NEXT_PUBLIC_SERVER_PORT}/graphql`
+  : `${NEXT_PUBLIC_BASE_URL}:${NEXT_PUBLIC_SERVER_PORT}/graphql`
 
-
-const link = createUploadLink({ uri: `${URI}/graphql` })
+// FIXME: Arreglar upload
+const link = createUploadLink({ uri: URI })
 
 
 const httpLink = createHttpLink({
@@ -33,24 +38,37 @@ const client = new ApolloClient({
 
 
 function MyApp({ Component, pageProps }) {
+
+
+  useEffect(() => {
+    console.log('window:', typeof (window) !== 'undefined')
+    if (typeof (window) !== 'undefined') {
+      window.scrollTo(0, 1);
+      window.addEventListener("touchmove", (e) => { e.preventDefault() })
+    }
+  }, [])
+
+
   return (
     <>
-      <Head>
-        <meta name="mobile-web-app-capable" content="yes" ></meta>
-        <meta name="apple-mobile-web-app-capable" content="yes" ></meta>
-        <link rel="manifest" href="dunplab-manifest-29818.json"></link>
-        <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon"></link>
-        <link rel="icon" href="/favicon.ico" type="image/x-icon"></link>
-        {/* <meta name="viewport" content="width=device-width, initial-scale=1"></meta> */}
-        <meta name="viewport" content="minimal-ui, width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
-      </Head>
-      <ApolloProvider client={client}>
-        <ThemeProvider theme={theme} >
-          <GlobalStyles />
-          {/* <Navbar title={`El recetario de Mayte`} /> */}
-          <Component {...pageProps} />
-        </ThemeProvider>
-      </ApolloProvider>
+      <StyleProvider>
+        <Head>
+          {/* <meta name="mobile-web-app-capable" content="yes" ></meta>
+          <meta name="apple-mobile-web-app-capable" content="yes" ></meta>
+          <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon"></link>
+          <link rel="icon" href="/favicon.ico" type="image/x-icon"></link> */}
+          <meta name="viewport" content="minimal-ui width=device-width, initial-scale=1, shrink-to-fit=no"></meta>
+          <link rel="manifest" href="/manifest.json"></link>
+          {/* <meta name="viewport" content="width=device-width, initial-scale=1"></meta> */}
+          {/* <meta name="viewport" content="minimal-ui, width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" /> */}
+        </Head>
+        <ApolloProvider client={client}>
+          <ThemeProvider theme={theme} >
+            <GlobalStyles />
+            <Component {...pageProps} />
+          </ThemeProvider>
+        </ApolloProvider>
+      </StyleProvider>
     </>
   )
 }

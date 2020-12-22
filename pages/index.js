@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useContext } from 'react'
 
 import jwtDecode from 'jwt-decode'
 
@@ -9,9 +9,20 @@ import styled from '@emotion/styled'
 
 import ListPuebloFeed from '../components/Pueblo/ListPuebloFeed'
 import MainLayout from '../layout/MainLayout';
+import { LIGHT_STYLE, StyleContext } from '../context/style';
 
 
 const Home = ({ theme, token }) => {
+  const context = useContext(StyleContext)
+  const { style, changeStyle } = context
+
+  if (typeof (localStorage) !== 'undefined') {
+    let styleFromStorage = localStorage.getItem('style')
+    if (styleFromStorage !== style) {
+      changeStyle()
+    }
+  }
+
   // FIXME: USEstate
   const [user, setUser] = useState(false)
 
@@ -24,37 +35,40 @@ const Home = ({ theme, token }) => {
   // Invited User
   if (user.rol === 'guest') {
     return (
-      <MainLayout token={token}>
-        <HomePageGuest theme={theme}>
+      <MainLayout token={token} light={style === LIGHT_STYLE}>
+        <HomePageGuest theme={theme} light={style === LIGHT_STYLE}>
           <Container>
-            <Row>
-              <Container >
-                <Row className='hero'>
-                  <h1>PUEBLOO</h1>
-                </Row >
-                <Row className='content'>
 
-                  <div className='item'>
-                    <img className='icon' src='/images/tuercas_inicio.svg' />
-                    <h4>
-                      Participa en el desarrollo de tu pueblo
-                </h4>
-                  </div>
-                  <div className='item'>
-                    <img className='icon' src='/images/usuarios_inicio.svg' />
-                    <h4>
-                      Conecta con los pueblos de tu zona
-                </h4>
-                  </div>
-                  <div className='item'>
-                    <img className='icon' src='/images/lupa_inicio.svg' />
-                    <h4>
-                      Descubre eventos, ofertas de empleo, viviendas...
-                </h4>
-                  </div>
+            <Container >
+
+              <Row className='content container'>
+                <Row className='item '>
+                  <img className='icon' src='/images/tuercas_inicio.svg' />
+                  <h4>
+                    Participa en el desarrollo de tu pueblo
+                    </h4>
+
                 </Row>
-              </Container>
-            </Row>
+                <Row className='item '>
+
+                  <img className='icon' src='/images/usuarios_inicio.svg' />
+                  <h4>
+                    Conecta con los pueblos de tu zona
+                    </h4>
+
+                </Row>
+                <Row className='item '>
+
+                  <img className='icon' src='/images/lupa_inicio.svg' />
+                  <h4>
+                    Descubre eventos, ofertas de empleo, viviendas...
+                    </h4>
+
+                </Row>
+                <Row></Row>
+              </Row>
+            </Container>
+
           </Container>
 
         </HomePageGuest >
@@ -67,8 +81,8 @@ const Home = ({ theme, token }) => {
 
     if (!!!pueblos || pueblos.length < 1) {
       return (
-        <MainLayout token={token}>
-          <HomePageRegistered>
+        <MainLayout token={token} light={style === LIGHT_STYLE}>
+          <HomePageRegistered >
             Sin Pueblo
           <Container>
               {/* FUNCION DE BUSCAR PUEBLO Y UNIRSE A EL */}
@@ -80,13 +94,13 @@ const Home = ({ theme, token }) => {
     } else {
       {/* CON PUEBLO*/ }
       return (
-        <MainLayout token={token}>
-          <HomePageRegistered>
+        <MainLayout token={token} light={style === LIGHT_STYLE}>
+          <HomePageRegistered light={style === LIGHT_STYLE}>
             <div className='feed-container scrollbar style-15'>
-              <ListPuebloFeed pueblos={pueblos} />
+              <ListPuebloFeed pueblos={pueblos} light={style === LIGHT_STYLE} />
             </div>
           </HomePageRegistered>
-        </MainLayout>
+        </MainLayout >
       )
     }
 
@@ -101,41 +115,10 @@ export default WithAuthSync(Home)
 
 const HomePageRegistered = styled.div`
   .feed-container{
+    background-color: ${({ theme, light }) => light ? theme.colors.light.light : theme.colors.dark.dark};;
     overflow:hidden;
   }
-  .scrollbar
-  {
-    height: 100vh;
-    width: 100vw;
-    float: left;
-    background: #F5F5F5;
-    overflow-y: scroll;
-  }
-  .style-15::-webkit-scrollbar-track
-  {
-    -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.1);
-    background-color: #F5F5F5;
-    border-radius: 10px;
-  }
-
-  .style-15::-webkit-scrollbar
-  {
-    width: 8px;
-    background-color: #F5F5F5;
-  }
-
-  .style-15::-webkit-scrollbar-thumb
-  {
-    border-radius: 10px;
-    background-color: #FFF;
-    background-image: -webkit-gradient(linear,
-                      40% 0%,
-                      75% 84%,
-                      from(#4D9C41),
-                      to(#19911D),
-									   color-stop(.6,#54DE5D))
-}
-
+  
 
 `
 
@@ -155,31 +138,34 @@ const HomePageGuest = styled.div`
     -o-background-size: cover;
     background-size: cover;
     height:100vh;
-    
-    
-    
     .hero{
-      padding:calc(20vh - 5em) 0 0 0;
       h1{
+        position:relative;
+        top:42px;
         margin:0 1em;
-        color:${props => props.theme.colors.primary};
+        color:${({ theme, light }) => light ? theme.colors.light.yellow : theme.colors.dark.yellow};
         text-align:center;
-        font-size:42px;
+        font-size:40px;
       }
     }
     .content{
+      position:relative;
+      top:60px;
+      max-height:300px;
       .item{
         display:flex;
+        flex-direction:column;
         .icon{
-          margin: 0 0 0 .5em;
+          width:2em;
           height:auto;
-          width:5em;;
+          color:${({ theme, light }) => light ? theme.colors.light.yellow : theme.colors.dark.yellow};
         }
         h4{
-          color:${props => props.theme.colors.primary};
+          color:${({ theme, light }) => light ? theme.colors.light.yellow : theme.colors.dark.yellow};
           text-align:left;
-          margin: 2em .5em 2em 1em;
-          font-size:18px;
+          font-size:14px;
+          margin-left:3em;
+          
         }
       }
     }

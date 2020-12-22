@@ -1,46 +1,104 @@
 import React from 'react'
+import Image from 'next/image'
 import styled from '@emotion/styled'
 import { Card } from 'react-bootstrap'
 
-const Post = ({ post }) => {
+import * as AiIcons from 'react-icons/ai'
+
+
+const Post = ({ post, pueblo, light }) => {
+    const { title, description, id, content } = post
     return (
-        <StyledPost>
-            <Card className='post-card'>
-                <h2 className='title' >{post.title}</h2>
-                <hr className='divider' />
-                <p className='description'>descripcion : {post.description}</p>
-                <p className='content'>contenido : {post.content}</p>
-                <p className='author'>autor : {post.author.username}</p>
+        <StyledPost light={light}>
+            <Card className='post-card container'>
+                <div className='row pueblo'>
+                    <p className='author'> {pueblo.name}<small className='small-text'> ha publicado esto</small></p>
+                </div>
+                <div className='row'>
+                    <h2 className='title' >{title}</h2>
+                </div>
+                <div className='rowš'>
+                    <p className='description'>{description}</p>
+                </div>
             </Card>
-        </StyledPost>
+            <Image className='imagen' src='/images/pueblo_sample.jpg' width={348} height={152} />
+            <div className='footer row container'>
+                <span className=' likes'><AiIcons.AiOutlineHeart /> <small className='likes-nmb'>27</small></span>
+                <span className=' comments'><AiIcons.AiOutlineComment /> <small className='likes-nmb'>3</small></span>
+                <span className=' share'><AiIcons.AiOutlineShareAlt /> <small className='likes-nmb'>27</small></span>
+            </div>
+        </StyledPost >
     )
 }
 
 const StyledPost = styled.div`
     .post-card{
+        background-color: ${({ theme, light }) => light ? theme.colors.light.light : theme.colors.dark.dark};;
         padding: .5em;
-        margin:.5em auto;
-        display:flex;
+        display:block;
         flex-direction:column;
-        height:50vh;
-        border: solid 1px ${props => props.theme.colors.light};
-        border-radius: 10px;
+        border: none;
+        color: ${({ theme, light }) => light ? theme.colors.light.dark : theme.colors.dark.light};
+        .description{
+            font-weight:400;
+        }
+        .card{
+            border:none;
+        }
         .title{
-            text-align:center;
+            text-align:left;
         }
         .divider{
             margin-top:.5em;
         }
         .description{
-            text-align:center;
+            text-align:left;
         }
         .content{
-            text-align:center;
+            text-align:left;
         }
         .author{
-            text-align:center;
+            text-align:left;
+            font-size:0.9em;
+            color: ${({ theme, light }) => light ? theme.colors.light.green : theme.colors.dark.green};
+            .small-text{
+                font-size:0.8em;
+                color: ${({ theme, light }) => light ? theme.colors.light.dark : theme.colors.dark.light};
+            }
+            
         }
 
+
+    }
+    .imagen{
+        border-radius:12px;
+    }
+    .footer{
+        margin-bottom:.25em;
+        display: grid;
+        grid-template-columns: 1fr 1fr .5fr;
+        .likes{
+            color: ${({ theme, light }) => light ? theme.colors.light.dark : theme.colors.dark.light};
+            font-size:1.3em;
+        }
+        .comments{
+            color: ${({ theme, light }) => light ? theme.colors.light.dark : theme.colors.dark.light};
+            position: absolute;
+            left:4em;
+            margin-left:.5em;
+            font-size:1.3em;
+        }
+        .share{
+            color: ${({ theme, light }) => light ? theme.colors.light.dark : theme.colors.dark.light};
+            position: absolute;
+            margin-right:1.5em;
+            right:0;
+            font-size:1.3em;
+        }
+        small{
+                font-size:0.8em;
+                color: ${({ theme, light }) => light ? theme.colors.light.dark : theme.colors.dark.light};
+        }
     }
 `
 

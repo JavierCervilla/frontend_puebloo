@@ -6,22 +6,39 @@ import * as BiIcons from "react-icons/bi"
 
 export const NavItems = [
     {
-        title: 'Home',
+        title: 'Perfil',
         path: '/',
-        icon: <AiIcons.AiFillHome />,
+        icon: <AiIcons.AiOutlineProfile />,
         cName: 'nav-text'
     },
     {
-        title: 'Login',
-        path: '/signin',
-        icon: <IoIcons.IoMdLogIn />,
+        title: 'Notificaciones',
+        path: '/',
+        icon: <IoIcons.IoMdAlarm />,
         cName: 'nav-text'
     },
     {
-        title: 'Signup',
-        path: '/signup',
-        icon: <FaIcons.FaSignInAlt />,
+        title: 'Configuracion',
+        path: '/',
+        icon: <FaIcons.FaAdjust />,
         cName: 'nav-text'
-    }
+    },
+    {
+        title: 'Centro de ayuda',
+        path: '/',
+        icon: <IoIcons.IoMdHelp />,
+        cName: 'nav-text'
+    },
+    {
+        title: 'Politica de privacidad',
+        path: '/',
+        icon: <FaIcons.FaUserSecret />,
+        cName: 'nav-text'
+    },
+    {
+        title: 'Crear Publicacion',
+        path: '/',
+        icon: <FaIcons.FaPlusCircle />,
+        cName: 'nav-text'
+    },
 ]
-

@@ -1,14 +1,29 @@
 const theme = {
+
+
+
     colors: {
-        primary: '#FFB515',
-        secondary: '#ff0660',
-        light: '#c7c4c4',
-        dark: '#060b26',
-        card: '#efefef',
-        success: 'green',
-        alert: '#1a83ff',
-        danger: '#fe0000',
-        layout: '#a5a6b7',
+        light: {
+            green: '#009A38',
+            yellow: '#FFCF0B',
+            light: '#FEFEFE',
+            dark: '#000000',
+            success: 'green',
+            alert: '#1a83ff',
+            danger: '#fe0000',
+            layout: '#FEFEFE',
+        },
+        dark: {
+            green: '#009A38',
+            yellow: '#FFCF0B',
+            light: '#FEFEFE',
+            dark: '#000000',
+            card: '#efefef',
+            success: 'green',
+            alert: '#1a83ff',
+            danger: '#fe0000',
+            layout: '#000000',
+        }
     },
     devices: {
         mobile: '768px',

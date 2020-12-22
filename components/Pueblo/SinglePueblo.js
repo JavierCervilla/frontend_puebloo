@@ -7,7 +7,7 @@ import styled from '@emotion/styled'
 
 import Post from '../../components/Post/Post'
 
-const SinglePueblo = ({ puebloId }) => {
+const SinglePueblo = ({ puebloId, light, theme }) => {
     const [pueblo, setPueblo] = useState(false)
 
     const data = useQuery(FETCH_PUEBLO_QUERY, {
@@ -19,6 +19,7 @@ const SinglePueblo = ({ puebloId }) => {
     useEffect(() => {
         if (data.data && data.data.getPueblo !== undefined)
             setPueblo(data.data.getPueblo)
+
     }, [data.data, data.loading])
 
     if (data.loading) {
@@ -29,13 +30,13 @@ const SinglePueblo = ({ puebloId }) => {
         )
     }
     return (
-        <StyledSinglePueblo>
+        <StyledSinglePueblo light={light} theme={theme}>
             <div className='pueblo-info'>
                 <h1>{pueblo.name}</h1>
                 <p>{pueblo.info}</p>
             </div>
             <div className='tablon-container'>
-                {pueblo && pueblo.tablon.map((post, index) => <Post key={`post-${index}`} post={post} />)}
+                {pueblo && pueblo.tablon.map((post, index) => <Post key={`post-${index}`} post={post} pueblo={pueblo} light={light} />)}
             </div>
         </StyledSinglePueblo>
     )
@@ -70,7 +71,11 @@ const FETCH_PUEBLO_QUERY = gql`
 
 
 const StyledSinglePueblo = styled.div`
-
+    margin-top:48px;
+    .pueblo-info {
+        color: ${({ theme, light }) => light ? `${theme.colors.light.green}` : `${theme.colors.dark.yellow}`};
+        font-weight:400;
+    }
 `
 
 export default SinglePueblo

@@ -5,20 +5,27 @@ import { useRouter } from 'next/router'
 import gql from 'graphql-tag'
 import { useMutation } from '@apollo/client'
 
-import { AuthContext } from '../context/auth'
 import { login } from '../utils/auth'
-
 
 import styled from '@emotion/styled'
 
 import { Container, Row, Spinner, Form, Button } from 'react-bootstrap'
 import Message from '../components/Message/Message'
 import MainLayout from '../layout/MainLayout'
+import { LIGHT_STYLE, StyleContext } from '../context/style'
 
 
 export default function register() {
     // CONTEXT
-    const context = useContext(AuthContext)
+    const context = useContext(StyleContext)
+    const { style, changeStyle } = context
+
+    if (typeof (localStorage) !== 'undefined') {
+        let styleFromStorage = localStorage.getItem('style')
+        if (styleFromStorage !== style) {
+            changeStyle()
+        }
+    }
 
     const Router = useRouter()
 
@@ -56,10 +63,10 @@ export default function register() {
     }, [errors])
 
     return (
-        <MainLayout >
-            <RegisterPage>
+        <MainLayout light={style === LIGHT_STYLE}>
+            <LoginPage light={style === LIGHT_STYLE}>
                 <Container className='layout'>
-                    <Row>
+                    {/*  <Row>
                         <Container>
                             <Link href='/'>
                                 <a >
@@ -67,7 +74,7 @@ export default function register() {
                                 </a>
                             </Link>
                         </Container>
-                    </Row>
+                    </Row> */}
                     <Row className='form'>
                         <Container>
                             <h1 className='title'>Iniciar sesion</h1>
@@ -87,9 +94,9 @@ export default function register() {
 
                             <Form onSubmit={(e) => submitHandler(e)} >
                                 <Form.Group controlId="Email">
-                                    <Form.Label>Correo electrónico</Form.Label>
+                                    {/* <Form.Label>Correo electrónico</Form.Label> */}
                                     <Form.Control type="email"
-                                        placeholder="introduzca su email"
+                                        placeholder="Correo Electrónico"
                                         value={email}
                                         onChange={(e) => setEmail(e.target.value)}
                                         isInvalid={!!errors.email}
@@ -98,9 +105,9 @@ export default function register() {
 
 
                                 <Form.Group controlId="Password">
-                                    <Form.Label>Contraseña</Form.Label>
+                                    {/* <Form.Label>Contraseña</Form.Label> */}
                                     <Form.Control type="password"
-                                        placeholder="Introduzca la contraseña"
+                                        placeholder="Contraseña"
                                         value={password}
                                         onChange={(e) => setPassword(e.target.value)}
                                         isInvalid={!!errors.password}
@@ -131,7 +138,7 @@ export default function register() {
                         </Container>
                     </Row>
                 </Container>
-            </RegisterPage >
+            </LoginPage >
         </MainLayout>
     )
 }
@@ -165,11 +172,13 @@ const LOGIN_USER = gql`
 
 
 const ErrorListUL = styled.ul`
-    margin-bottom:1em;
+    margin-bottom:.5em;
 `
 
-const RegisterPage = styled.div`
-    @media only screen and (max-width: ${props => props.theme.devices.mobile}) {    
+const LoginPage = styled.div`
+    @media only screen and (max-width: ${props => props.theme.devices.mobile}) {
+        background-color:${({ theme, light }) => light ? theme.colors.light.light : theme.colors.dark.dark};
+        height:100vh;
         .form{
             display:flex;
             flex-direction:column;
@@ -177,7 +186,7 @@ const RegisterPage = styled.div`
             margin: auto;
         }
         .layout{
-            padding:.5em;
+            padding:1.5em;
             
         }
         .errors{
@@ -194,6 +203,7 @@ const RegisterPage = styled.div`
         .title{
             font-size:1.5em;
             margin:  2em 0;
+            color:${({ theme, light }) => light ? theme.colors.light.dark : theme.colors.dark.light};
         }
         .btn-register{
             background-color:green;

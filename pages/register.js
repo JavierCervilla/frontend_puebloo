@@ -6,7 +6,7 @@ import gql from 'graphql-tag'
 import { useMutation } from '@apollo/client'
 
 // CONTEXT
-import { AuthContext } from '../context/auth'
+import { LIGHT_STYLE, StyleContext } from '../context/style'
 
 
 import styled from '@emotion/styled'
@@ -17,7 +17,15 @@ import MainLayout from '../layout/MainLayout'
 
 
 export default function register() {
-    const context = useContext(AuthContext)
+    const context = useContext(StyleContext)
+    const { style, changeStyle } = context
+
+    if (typeof (localStorage) !== 'undefined') {
+        let styleFromStorage = localStorage.getItem('style')
+        if (styleFromStorage !== style) {
+            changeStyle()
+        }
+    }
 
 
     const Router = useRouter()
@@ -55,11 +63,11 @@ export default function register() {
     }, [errors])
 
     return (
-        <MainLayout >
+        <MainLayout light={style === LIGHT_STYLE}>
 
-            <RegisterPage>
+            <RegisterPage light={style === LIGHT_STYLE}>
                 <Container className='layout'>
-                    <Row>
+                    {/*  <Row>
                         <Container>
                             <Link href='/'>
                                 <a >
@@ -67,7 +75,7 @@ export default function register() {
                                 </a>
                             </Link>
                         </Container>
-                    </Row>
+                    </Row> */}
                     <Row className='form'>
                         <Container>
                             <h1 className='title'>Registrarse</h1>
@@ -92,35 +100,35 @@ export default function register() {
 
                             <Form onSubmit={(e) => submitHandler(e)} className='form' >
                                 <Form.Group controlId="Email">
-                                    <Form.Label>Correo electrónico</Form.Label>
+                                    {/* <Form.Label>Correo electrónico</Form.Label> */}
                                     <Form.Control type="email"
-                                        placeholder="introduzca su email"
+                                        placeholder="Correo electrónico"
                                         value={email}
                                         onChange={(e) => setEmail(e.target.value)}
                                         isInvalid={!!errors.email}
                                     />
                                 </Form.Group>
                                 <Form.Group controlId="Username">
-                                    <Form.Label>Nombre de usuario</Form.Label>
+                                    {/* <Form.Label>Nombre de usuario</Form.Label> */}
                                     <Form.Control type="text"
-                                        placeholder="introduzca su nombre de usuario"
+                                        placeholder="Nombre y Apellidos"
                                         value={username}
                                         onChange={(e) => setUsername(e.target.value)}
                                         isInvalid={!!errors.username}
                                     />
 
-                                    <Form.Text className="text-muted">
+                                    {/*                                     <Form.Text className="text-muted">
                                         <span>
                                             <small>utiliza un nombre de usuario que te represente.</small>
                                         </span>
-                                    </Form.Text>
+                                    </Form.Text> */}
                                 </Form.Group>
 
 
                                 <Form.Group controlId="Password">
-                                    <Form.Label>Contraseña</Form.Label>
+                                    {/* <Form.Label>Contraseña</Form.Label> */}
                                     <Form.Control type="password"
-                                        placeholder="Introduzca la contraseña"
+                                        placeholder="Contraseña"
                                         value={password}
                                         onChange={(e) => setPassword(e.target.value)}
                                         isInvalid={!!errors.password}
@@ -129,9 +137,9 @@ export default function register() {
                                 </Form.Group>
 
                                 <Form.Group controlId="ConfirmPassword">
-                                    <Form.Label>Repetir contraseña</Form.Label>
+                                    {/* <Form.Label>Repetir contraseña</Form.Label> */}
                                     <Form.Control type="password"
-                                        placeholder="Vuelve a introducir la contraseña"
+                                        placeholder="Repetir Contraseña"
                                         value={confirmPassword}
                                         onChange={(e) => setConfirmPassword(e.target.value)}
                                         isInvalid={!!errors.password}
@@ -206,7 +214,9 @@ const ErrorListUL = styled.ul`
 `
 
 const RegisterPage = styled.div`
-    @media only screen and (max-width: ${props => props.theme.devices.mobile}) {    
+    @media only screen and (max-width: ${props => props.theme.devices.mobile}) {
+        background-color:${({ theme, light }) => light ? theme.colors.light.light : theme.colors.dark.dark};
+        height:100vh;
         .form{
             display:flex;
             flex-direction:column;
@@ -215,7 +225,7 @@ const RegisterPage = styled.div`
             overflow:scroll;
         }
         .layout{
-            padding:.5em;
+            padding:1.5em;
         }
         .errors{
             position:absolute;
@@ -230,11 +240,8 @@ const RegisterPage = styled.div`
         }
         .title{
             font-size:1.5em;
-            margin:  2em 0;
-            @media only screen and (max-width:321px){
-                margin: 1em;
-                font-size:1em;
-            }
+            margin: 2em 0;
+            color:${({ theme, light }) => light ? theme.colors.light.dark : theme.colors.dark.light};
         }
         .btn-register{
             background-color:green;
