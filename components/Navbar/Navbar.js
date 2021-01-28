@@ -6,7 +6,7 @@ import { NavItems } from './NavItems';
 import { IconContext } from 'react-icons';
 import styled from '@emotion/styled'
 
-import { WithAuthSync } from '../../utils/auth'
+import { logout, WithAuthSync } from '../../utils/auth'
 import { StyleContext } from '../../context/style';
 import { Button, Container } from 'react-bootstrap';
 
@@ -45,52 +45,55 @@ function Navbar({ theme }) {
     return (
         <SidebarStyled light={light}>
             <IconContext.Provider value={{ color: '#FFCF0B' }}>
-                <div className='sidebar container'>
-                    {/*TODO: ESTILAR SEARCHBAR */}
-                    {/*  <div className='container searchbar'> */}
-                    <Link href='#' >
-                        <a className='menu-bars'>
-                            {/* <FaIcons.FaBars onClick={showSidebar} /> */}
-                            <img className='logo' src='/images/logo.png' alt='logo' onClick={showSidebar} />
-                        </a>
-                    </Link>
-                    {/* <input type='text' placeholder='encuentra lo que busques' /> */}
-                    {/* </div> */}
-                </div>
-                <nav className={sidebar ? 'nav-menu active' : 'nav-menu'}>
-                    <div>
-                        <ul className='nav-menu-items' onClick={showSidebar} >
-                            <li className='navbar-toggle' onClick={showSidebar}>
-                                <Link href='#' >
-                                    <a className='menu-bars nav-text'>
-                                        <AiIcons.AiOutlineClose />
-                                        <spam >close</spam>
-                                    </a>
-                                </Link>
-                            </li>
-                            {NavItems.map((item, index) =>
-                                <li key={index} className={item.cName}>
-                                    <Link href={item.path}>
-                                        <a>
-                                            {item.icon}
-                                            <span>{item.title}</span>
+                <>
+                    <div className='sidebar d-flex'>
+                        {/*TODO: ESTILAR SEARCHBAR */}
+                        <Link href='#' >
+                            <a className='menu-bars col-2 logo'>
+                                {/* <FaIcons.FaBars onClick={showSidebar} /> */}
+                                <img src='/images/logo.png' alt='logo' onClick={showSidebar} />
+                            </a>
+                        </Link>
+                        <div className='col-10 container searchbar'>
+                            <input type='text' placeholder='encuentra lo que busques' />
+                        </div>
+
+                    </div>
+                    <nav className={sidebar ? 'nav-menu active' : 'nav-menu'}>
+                        <div>
+                            <ul className='nav-menu-items' onClick={showSidebar} >
+                                <li className='navbar-toggle' onClick={showSidebar}>
+                                    <Link href='#' >
+                                        <a className='menu-bars nav-text'>
+
+                                            <span className='close-btn' >Cerrar</span>
                                         </a>
                                     </Link>
                                 </li>
-                            )
-                            }
-                        </ul>
-
-                        <Button className='style-toggle' onClick={styleToggle} variant='block' >
-                            {light ? <FaIcons.FaMoon /> : <FaIcons.FaSun />}
-                        </Button>
-
-
-                    </div>
-                </nav>
-                <div className={sidebar ? 'fixed-active' : 'd-none'} onClick={showSidebar} ></div>
+                                {NavItems.map((item, index) =>
+                                    <li key={index} className={item.cName}>
+                                        <Link href={item.path}>
+                                            <a>
+                                                {item.icon}
+                                                <span>{item.title}</span>
+                                            </a>
+                                        </Link>
+                                    </li>
+                                )
+                                }
+                            </ul>
+                            <Button className='logout' variant='block' onClick={logout}>
+                                <AiIcons.AiOutlineLogout />
+                            </Button>
+                            <Button className='text-lowercasegout' onClick={styleToggle} variant='block' >
+                                {light ? <FaIcons.FaMoon /> : <FaIcons.FaSun />}
+                            </Button>
+                        </div>
+                    </nav>
+                    <div className={sidebar ? 'fixed-active' : 'fixed d-none'} onClick={showSidebar} ></div>
+                </>
             </IconContext.Provider>
-        </SidebarStyled>
+        </SidebarStyled >
     );
 }
 
@@ -102,34 +105,52 @@ const SidebarStyled = styled.div`
         bottom:5em;
         z-index:999;
     }
+    .logout{
+        img{
+            width:42px;
+            height:auto;
+        }
+    }
 
     .sidebar {
         background-color: ${({ theme, light }) => light ? `${theme.colors.light.light}25` : `${theme.colors.dark.dark}75`};
         backdrop-filter: blur(15px);
         position:fixed;
+        top:0;
         width:100%;
         height: 42px;
         display: flex;
         justify-content: start;
         align-items: center;
         z-index:3;
-            .searchbar{
-                display:flex;
-                justify-content:space-between;
-            }
+    }
+    .searchbar{
+        input{
+            border:solid 1px ${({ theme, light }) => light ? `${theme.colors.light.yellow}` : `${theme.colors.dark.yellow}`};
+            background-color:${({ theme, light }) => light ? `${theme.colors.light.dark}25` : `${theme.colors.dark.light}25`};
+            backdrop-filter: blur(5px);
+            color:${({ theme, light }) => light ? `${theme.colors.light.yellow}` : `${theme.colors.dark.yellow}`};
+            text-align:center;
+            padding:.15em 1em .3em 1em;
+            border-radius:8px;
+            width:100%;
+        }
+        input::placeholder{
+            color: ${({ theme, light }) => light ? theme.colors.light.dark : theme.colors.dark.green};
+            font-size:.95em;
+        }
     }
 
-    .menu-bars {
-        margin-left: 1rem;
-        font-size: 1rem;
-    }
     .logo {
-        width:42px;
-        height:auto;
+        padding: 0 1.5em;
+        img{
+            width:42px;
+            height:auto;
+        }
     }
     .nav-menu {
         padding-top:41px;
-        background-color: ${({ theme, light }) => !light ? `${theme.colors.light.dark}25` : `${theme.colors.dark.light}75`};
+        background-color: ${({ theme, light }) => light ? `${theme.colors.light.light}75` : `${theme.colors.dark.dark}25`};
         backdrop-filter: blur(15px);
         width: 200px;
         height: 100vh;
@@ -150,15 +171,21 @@ const SidebarStyled = styled.div`
         overflow:hidden;
     }
 
+    .fixed{
+        left: -100%;
+        top: 0;
+        transition: 850ms;
+    }
     .fixed-active{
         position:fixed;
         width:100vw;
-        height:100%;
+        height:100vh;
         background-color: ${({ theme, light }) => light ? `${theme.colors.light.dark}70` : `${theme.colors.dark.dark}70`};
         backdrop-filter: blur(10px);
         z-index:4;
         bottom:0;
         right:0;
+        transition: 250ms;
         overflow:hidden;
     }
 
@@ -213,7 +240,10 @@ const SidebarStyled = styled.div`
     }
 
     span {
-        margin-left: 16px;
+        margin-left: 10px;
+    }
+    .close-btn{
+        color: ${({ theme, light }) => light ? `${theme.colors.light.dark}` : `${theme.colors.dark.light}`};
     }
     
 `

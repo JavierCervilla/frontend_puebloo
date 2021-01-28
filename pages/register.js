@@ -5,6 +5,8 @@ import { useRouter } from 'next/router'
 import gql from 'graphql-tag'
 import { useMutation } from '@apollo/client'
 
+import { login, WithAuthSync } from '../utils/auth'
+
 // CONTEXT
 import { LIGHT_STYLE, StyleContext } from '../context/style'
 
@@ -16,7 +18,7 @@ import Message from '../components/Message/Message'
 import MainLayout from '../layout/MainLayout'
 
 
-export default function register() {
+const Register = () => {
     const context = useContext(StyleContext)
     const { style, changeStyle } = context
 
@@ -38,7 +40,7 @@ export default function register() {
 
     const [addUser, { loading }] = useMutation(REGISTER_USER, {
         update(_, { data: { register: userData } }) {
-            context.login(userData)
+            login(userData)
             Router.push('/')
         },
         onError(err) {
@@ -256,3 +258,6 @@ const RegisterPage = styled.div`
     
     }
 `
+
+
+export default WithAuthSync(Register)

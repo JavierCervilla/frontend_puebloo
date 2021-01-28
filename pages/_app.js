@@ -10,8 +10,6 @@ import GlobalStyles from '../components/GlobalStyles/GlobalStyles'
 import theme from '../theme/theme'
 
 import 'bootstrap/dist/css/bootstrap.min.css';
-import { StyleContext } from '../context/style'
-import { useEffect } from 'react'
 
 
 
@@ -23,11 +21,16 @@ const URI = NODE_ENV === 'development'
   : `${NEXT_PUBLIC_BASE_URL}:${NEXT_PUBLIC_SERVER_PORT}/graphql`
 
 // FIXME: Arreglar upload
-const link = createUploadLink({ uri: URI })
+//const link = createUploadLink({ uri: URI })
 
-
+/**
 const httpLink = createHttpLink({
   uri: URI
+})
+ */
+
+const httpLink = createHttpLink({
+  uri: 'http://15.236.205.128:5000/graphql'
 })
 
 const client = new ApolloClient({
@@ -38,16 +41,6 @@ const client = new ApolloClient({
 
 
 function MyApp({ Component, pageProps }) {
-
-
-  useEffect(() => {
-    console.log('window:', typeof (window) !== 'undefined')
-    if (typeof (window) !== 'undefined') {
-      window.scrollTo(0, 1);
-      window.addEventListener("touchmove", (e) => { e.preventDefault() })
-    }
-  }, [])
-
 
   return (
     <>

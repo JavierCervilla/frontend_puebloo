@@ -2,17 +2,21 @@ import { useState, useEffect, useContext } from 'react'
 
 import jwtDecode from 'jwt-decode'
 
-import { WithAuthSync } from "../utils/auth";
+import { auth, WithAuthSync } from "../utils/auth";
 
-import { Container, Button, Row, Col } from 'react-bootstrap'
+import { Container, Button, Row, Col, Form } from 'react-bootstrap'
 import styled from '@emotion/styled'
 
 import ListPuebloFeed from '../components/Pueblo/ListPuebloFeed'
 import MainLayout from '../layout/MainLayout';
 import { LIGHT_STYLE, StyleContext } from '../context/style';
+import SearchBarIndex from '../components/SearchBar/SearchBarIndex';
 
 
-const Home = ({ theme, token }) => {
+
+const Home = ({ theme }) => {
+
+  const token = auth()
   const context = useContext(StyleContext)
   const { style, changeStyle } = context
 
@@ -27,98 +31,115 @@ const Home = ({ theme, token }) => {
   const [user, setUser] = useState(false)
 
   useEffect(() => {
-    const userData = jwtDecode(token)
-    setUser(userData)
+    // FIXME: revisar este useEffect
+    if (typeof (window) !== "undefined" && !!window.localStorage.getItem('token') && token !== window.localStorage.getItem('token')) {
+      setUser(jwtDecode(window.localStorage.getItem('token')))
+    } else {
+      setUser(jwtDecode(token))
+    }
+    console.log('userData in useEffect', user)
+
   }, [token])
 
 
   // Invited User
   if (user.rol === 'guest') {
     return (
-      <MainLayout token={token} light={style === LIGHT_STYLE}>
+      <MainLayout light={style === LIGHT_STYLE} token={token}>
         <HomePageGuest theme={theme} light={style === LIGHT_STYLE}>
           <Container>
 
-            <Container >
 
-              <Row className='content container'>
-                <Row className='item '>
-                  <img className='icon' src='/images/tuercas_inicio.svg' />
-                  <h4>
-                    Participa en el desarrollo de tu pueblo
+
+            <Row className='content container'>
+              <Row className='item '>
+                <img className='icon' src='/images/tuercas_inicio.svg' />
+                <h4>
+                  Participa en el desarrollo de tu pueblo
                     </h4>
 
-                </Row>
-                <Row className='item '>
-
-                  <img className='icon' src='/images/usuarios_inicio.svg' />
-                  <h4>
-                    Conecta con los pueblos de tu zona
-                    </h4>
-
-                </Row>
-                <Row className='item '>
-
-                  <img className='icon' src='/images/lupa_inicio.svg' />
-                  <h4>
-                    Descubre eventos, ofertas de empleo, viviendas...
-                    </h4>
-
-                </Row>
-                <Row></Row>
               </Row>
-            </Container>
+              <Row className='item '>
 
+                <img className='icon' src='/images/usuarios_inicio.svg' />
+                <h4>
+                  Conecta con los pueblos de tu zona
+                    </h4>
+
+              </Row>
+              <Row className='item '>
+
+                <img className='icon' src='/images/lupa_inicio.svg' />
+                <h4>
+                  Descubre eventos, ofertas de empleo, viviendas...
+                    </h4>
+
+              </Row>
+              <Row></Row>
+            </Row>
           </Container>
+
 
         </HomePageGuest >
       </MainLayout>
     )
 
-  } else {
+  } else if (!!!user.pueblos || user.pueblos.length < 1) {
     // AUTH USER SIN PUEBLOS??
+    return (
+      <MainLayout token={token} light={style === LIGHT_STYLE} token={typeof (window) !== "undefined" && window.localStorage.getItem('token')}>
+        <HomePageRegistered light={style === LIGHT_STYLE} >
+          {/* FUNCION DE BUSCAR PUEBLO Y UNIRSE A EL */}
+          <div className='search-container'>
+            < SearchBarIndex light={style === LIGHT_STYLE} token={token} />
+          </div>
+
+        </HomePageRegistered>
+      </MainLayout>
+    )
+
+  } else {
     const { pueblos } = user
-
-    if (!!!pueblos || pueblos.length < 1) {
-      return (
-        <MainLayout token={token} light={style === LIGHT_STYLE}>
-          <HomePageRegistered >
-            Sin Pueblo
-          <Container>
-              {/* FUNCION DE BUSCAR PUEBLO Y UNIRSE A EL */}
-            </Container>
-          </HomePageRegistered>
-        </MainLayout>
-      )
-
-    } else {
-      {/* CON PUEBLO*/ }
-      return (
-        <MainLayout token={token} light={style === LIGHT_STYLE}>
-          <HomePageRegistered light={style === LIGHT_STYLE}>
-            <div className='feed-container scrollbar style-15'>
-              <ListPuebloFeed pueblos={pueblos} light={style === LIGHT_STYLE} />
-            </div>
-          </HomePageRegistered>
-        </MainLayout >
-      )
-    }
-
+    {/* CON PUEBLO*/ }
+    return (
+      <MainLayout light={style === LIGHT_STYLE} token={typeof (window) !== "undefined" && window.localStorage.getItem('token')}>
+        <HomePageRegistered light={style === LIGHT_STYLE}>
+          <div className='feed-container'>
+            <ListPuebloFeed pueblos={pueblos} light={style === LIGHT_STYLE} token={token} />
+          </div>
+        </HomePageRegistered>
+      </MainLayout >
+    )
   }
+
+
 }
 
 
 
-export default WithAuthSync(Home)
 
 /** REGISTERED HOME PAGE STYLES */
 
 const HomePageRegistered = styled.div`
+  background: url('images/home_layout.png') no-repeat center center fixed; 
+    -webkit-background-size: cover;
+    -moz-background-size: cover;
+    -o-background-size: cover;
+    background-size: cover;
+    height:100vh;
   .feed-container{
     background-color: ${({ theme, light }) => light ? theme.colors.light.light : theme.colors.dark.dark};;
     overflow:hidden;
+    min-height:100vh;
   }
   
+
+  .search-container{
+    margin:0 2em 0 2em;
+    padding-top:2em;
+    max-height:100vh;
+    
+  }
 
 `
 
@@ -171,3 +192,5 @@ const HomePageGuest = styled.div`
     }
 }
 `
+
+export default WithAuthSync(Home)

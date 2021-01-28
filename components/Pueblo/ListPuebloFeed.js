@@ -4,16 +4,18 @@ import styled from '@emotion/styled'
 import { Container, Row } from 'react-bootstrap'
 
 import SinglePueblo from '../../components/Pueblo/SinglePueblo'
+import { WithAuthSync } from '../../utils/auth'
 
-const ListPuebloFeed = ({ pueblos, light }) => {
-
+const ListPuebloFeed = ({ pueblos, light, token }) => {
+    console.log('pueblos', pueblos)
     return (
         <StyledListPost light={light}>
             <Container className='feed'>
                 {(pueblos && pueblos.length >= 1) && (
+
                     pueblos.map(
                         (pueblo, index) => (
-                            <SinglePueblo key={`${pueblo.name}-${index}`} puebloId={pueblo._id} light={light} />
+                            < SinglePueblo key={`${pueblo.name}-${index}`} puebloId={pueblo._id} light={light} token={token} />
                         )
                     )
                 )}
@@ -40,4 +42,4 @@ const StyledListPost = styled.div`
     }
 `
 
-export default ListPuebloFeed
+export default WithAuthSync(ListPuebloFeed)

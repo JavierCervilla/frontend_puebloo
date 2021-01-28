@@ -5,44 +5,71 @@ import cookie from 'js-cookie'
 import jwt from 'jsonwebtoken'
 
 export const login = ({ token }) => {
+    console.log('2.-token>>>>>', token)
     cookie.set('token', token, { expires: 1 })
+    typeof window !== 'undefined' && window.localStorage.setItem('token', token)
+
+    typeof window !== 'undefined' && console.log('token form storage:', window.localStorage.getItem('token'))
     Router.push('/')
 }
 
 export const auth = ctx => {
-    const { token } = nextCookie(ctx)
-    console.log('token in auth:', token)
-    // If there's no token, it means the user is not logged in.
-    if (!token || token === undefined) {
-        if (typeof window === 'undefined') {
-            return jwt.sign(
-                {
-                    username: "guest",
-                    rol: "guest",
-                },
-                "tuvieja",
-                { expiresIn: '1h' })
-            /*             ctx.res.writeHead(302, { Location: '/register' })
-                        ctx.res.end() */
-        } else {
-            return jwt.sign(
-                {
-                    username: "guest",
-                    rol: "guest",
-                },
-                "tuvieja"
-                ,
-                { expiresIn: '1h' })
-            //Router.push('/login')
-        }
+    /**
+     *  Cliente:
+     *      - token en localstorage
+     *      - token en cookie
+     *  Server:
+     *      - token en cookie
+     * 
+     */
+
+    // 1 obtener el token
+    // distinguimos entre cliente y server para obtenerlo
+    const token = {
+        client: undefined,
+        server: undefined,
+        common: undefined
     }
 
-    return token
+    if (typeof window === 'undefined') {
+        /** ESTAMOS EN EL SERVIDOR */
+        console.log('entro en la zona del server')
+        token.server =
+            !!cookie.get('token')
+                ? cookie.get('token') :
+                jwt.sign({
+                    username: "guest",
+                    rol: "guest",
+                }, "42MadridFundacionTelefonicas",
+                    { expiresIn: '1h' })
+        token.common = token.server
+    } else {
+        console.log('entro en la zona de client')
+        token.client =
+            !!cookie.get('token')
+                ? cookie.get('token') :
+                !!window.localStorage.getItem('token') ?
+                    window.localStorage.getItem('token') :
+                    jwt.sign({
+                        username: "guest",
+                        rol: "guest",
+                    }, "42MadridFundacionTelefonicas",
+                        { expiresIn: '1h' })
+        token.common = token.client
+    }
+
+
+    // TENEMOS EL TOKEN PARA LOS DOS AMBIENTES EN TOKEN.COMMON
+
+    console.log('token.common:', token.common)
+
+    return token.common
 }
 
 export const logout = () => {
     cookie.remove('token')
     // to support logging out from all windows
+    window.localStorage.removeItem('token')
     window.localStorage.setItem('logout', Date.now())
     Router.push('/login')
 }

@@ -8,15 +8,15 @@ import { WithAuthSync } from '../utils/auth'
 const MainLayout = ({ children, token, light, theme }) => {
 
 
-    return (
-        <MainLayoutStyled light={light} theme={theme} >
-            <Navbar className='sidebar' light={light} />
-            <div className='content'>
-                {children}
-            </div>
-            <Header token={token} light={light} className='header' />
-        </MainLayoutStyled>
-    )
+  return (
+    <MainLayoutStyled light={light} theme={theme} >
+      <Navbar light={light} />
+      <div className='content'>
+        {children}
+      </div>
+      <Header light={light} token={token} className='header' />
+    </MainLayoutStyled>
+  )
 }
 
 const MainLayoutStyled = styled.div`

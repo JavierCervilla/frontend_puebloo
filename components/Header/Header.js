@@ -72,9 +72,6 @@ const Header = ({ token, light }) => {
                   <img src='/images/business_header.svg' />
                 </Button>
               </Link>
-              {/*               <Button as='a' className='icon business' disabled variant='dark' onClick={logout}>
-                <img src='/images/logout_header.svg' />
-              </Button> */}
             </Container>
           </Row>
         </Container>
@@ -84,7 +81,6 @@ const Header = ({ token, light }) => {
 }
 
 const HeaderStyled = styled.div`
-
     .btn-holder{
       background-color: ${({ theme, light }) => light ? `${theme.colors.light.dark}25` : `${theme.colors.dark.light}25`};
       backdrop-filter: blur(10px);
@@ -118,7 +114,7 @@ const HeaderStyled = styled.div`
         border-radius: ${props => props.theme.border.radius};
       }
       .login::active{
-        background-color:${props => props.theme.colors.success};
+        background-color:${props => props.theme.colors.light.success};
       }
     }
 

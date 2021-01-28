@@ -37,7 +37,7 @@ export const NavItems = [
     },
     {
         title: 'Crear Publicacion',
-        path: '/',
+        path: '/newpost',
         icon: <FaIcons.FaPlusCircle />,
         cName: 'nav-text'
     },

@@ -5,7 +5,7 @@ import { useRouter } from 'next/router'
 import gql from 'graphql-tag'
 import { useMutation } from '@apollo/client'
 
-import { login } from '../utils/auth'
+import { login, WithAuthSync } from '../utils/auth'
 
 import styled from '@emotion/styled'
 
@@ -15,7 +15,7 @@ import MainLayout from '../layout/MainLayout'
 import { LIGHT_STYLE, StyleContext } from '../context/style'
 
 
-export default function register() {
+const Login = () => {
     // CONTEXT
     const context = useContext(StyleContext)
     const { style, changeStyle } = context
@@ -35,15 +35,14 @@ export default function register() {
 
 
     const [loginUser, { loading }] = useMutation(LOGIN_USER, {
-        async update(_, { data: { login: userData } }) {
-            console.log('login:', userData)
-            //context.login(userData)
-            await login(userData)
+        update(_, { data: { login: userData } }) {
+            console.log('1.-login user data:', userData)
+            login(userData)
             Router.push('/')
         },
         onError(err) {
             console.log('error:', { err })
-            setErrors(err.graphQLErrors[0].extensions.exception.errors)
+            setErrors(err.graphQLErrors.length >= 1 ? err.graphQLErrors[0].extensions.exception.errors : 'error')
         },
         variables: {
             email, password,
@@ -80,12 +79,12 @@ export default function register() {
                             <h1 className='title'>Iniciar sesion</h1>
 
                             <ErrorListUL className='errors'>
-                                {errors.email &&
+                                {errors && errors.email &&
                                     <li className='msg-li'>
                                         <Message className='msg' variant={"danger"} >{errors.email}</Message>
                                     </li>
                                 }
-                                {errors.password &&
+                                {errors && errors.password &&
                                     <li className='msg-li'>
                                         <Message style={{ marginTop: '.5em' }} variant={"danger"} >{errors.password}</Message>
                                     </li>
@@ -99,7 +98,7 @@ export default function register() {
                                         placeholder="Correo Electrónico"
                                         value={email}
                                         onChange={(e) => setEmail(e.target.value)}
-                                        isInvalid={!!errors.email}
+                                        isInvalid={errors && !!errors.email}
                                     />
                                 </Form.Group>
 
@@ -110,7 +109,7 @@ export default function register() {
                                         placeholder="Contraseña"
                                         value={password}
                                         onChange={(e) => setPassword(e.target.value)}
-                                        isInvalid={!!errors.password}
+                                        isInvalid={errors && !!errors.password}
                                     />
 
                                 </Form.Group>
@@ -161,7 +160,11 @@ const LOGIN_USER = gql`
       token
       rol
       pueblos{
-          id name
+          id name tablon {
+            id
+            title
+            likes {id}
+          }
       }
     }
   }
@@ -218,3 +221,5 @@ const LoginPage = styled.div`
     
     }
 `
+
+export default WithAuthSync(Login)
